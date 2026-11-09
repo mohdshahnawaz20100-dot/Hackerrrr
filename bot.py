@@ -1,4 +1,21 @@
-"""
+import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Clonix is running!")
+
+def start_health_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthHandler)
+    threading.Thread(
+        target=server.serve_forever,
+        daemon=True
+    ).start()
+  """
 CLONIX — safe Telegram utility bot
 ---------------------------------
 Runs as a Telegram BOT account only. It does not request users' phone numbers,
